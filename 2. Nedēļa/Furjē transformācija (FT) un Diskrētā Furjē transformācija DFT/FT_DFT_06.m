@@ -1,27 +1,31 @@
-close all;
 clear all;
+close all;
 
-N = 1000;
-w1 = 2 * pi / N * 100;
-w2 = 2 * pi / N * 317;
+A1 = 1;
+A2 = 0.7;
+omega1 = 2 * pi / 5;
+omega2 = 2 * pi / 7;
 
-n = 0:N-1;
-x = 3 * cos(w1*n) + 4 * cos(w2*n);
+n = [0:100];
 
-X = fft(x);
+x_n = A1 * cos(omega1 * n) + A2 * cos(omega2 * n);
 
-# Aprēķināt un attēlot DFT (izmantojot semilogy)
-semilogy(abs(X)/ N);
+subplot(3,1,1);
+stem(n, x_n);
 
-# Blackman window
-a0 = 0.42;
-a1 = 0.5;
-a2 = 0.08;
-bw = a0 - a1 * cos( (2*pi*n) / N) + a2 * cos((4*pi*n)/N);
-plot(bw);
+M = lcm(5, 7);
 
-with_window = x.* bw;
-plot(n, with_window)
+N1 = 3 * M;
+N2 = 0.3 * M;
 
-XF = fft(with_window);
-semilogy(abs(XF)/N)
+X_N1 = fft(x_n, N1);
+X_N2 = fft(x_n, N2);
+
+subplot(3,1,2);
+semilogy(abs(X_N1));
+
+subplot(3,1,3);
+semilogy(abs(X_N2));
+
+print "dpng" "FT_DFT_06.png";
+

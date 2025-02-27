@@ -1,40 +1,37 @@
 close all;
 clear all;
 
-L_vajag = 50; # vajadzigais garums
-plot_count = 3;
-n = [0 : 17];
+N = 100;
+n = 0:N-1;
+h = exp(-0.3 * n);
+g = [1, -h(1:end-1)];
 
-h1 = exp(-0.3*n);
-h = h1/sum(h1);
-
-d = [ 1 zeros(1,length(h)-1)];
-
-g = d - h;
-zf_af = conv(h, g);
-
-h_fft = fft(h);
-g_fft = fft(g);
-
-h_padded = [h zeros(1, L_vajag-length(h))];
-d_padded = [d zeros(1, L_vajag-length(d))];
-g_padded = [g zeros(1, L_vajag-length(g))];
+b = conv(h, g);
 
 
-figure(1)
-subplot(plot_count, 1, 1);
-plot(h);
-subplot(plot_count, 1, 2);
-plot(g);
-subplot(plot_count, 1, 3);
-plot(zf_af);
+H = fft(h, N);
+G = fft(g, N);
+B = fft(b, N);
 
-figure(2)
-subplot(plot_count, 1, 1);
-plot(h_fft);
-subplot(plot_count, 1, 2);
-plot(d_fft);
-subplot(plot_count, 1, 3);
-plot(g_fft);
+
+f = (0:N-1)/N;
+
+figure;
+subplot(4,1,1);
+plot(f, abs(H));
+
+subplot(4,1,2);
+plot(f, abs(G));
+
+subplot(4,1,3);
+plot(f, abs(B));
+
+HG = H .* G;
+
+subplot(4,1,4);
+plot(f, abs(HG), 'r', f, abs(B), 'b--');
+
+print "dpng" "FT_DFT_10.png";
+
 
 
